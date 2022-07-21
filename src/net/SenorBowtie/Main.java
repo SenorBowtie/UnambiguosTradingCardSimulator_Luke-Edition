@@ -1,5 +1,6 @@
 package net.SenorBowtie;
 
+import javax.lang.model.type.DeclaredType;
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -22,8 +23,371 @@ public class Main {
         Map<String,Boolean> IsEnergyOrTool = new HashMap<>();
         Map<String,String> PokemonEvolvesFrom = new HashMap<>();
         Map<String,List<String>> AttachedCards = new HashMap<>();
+        Boolean DeckConfirmed = false;
+        while (!DeckConfirmed) {
+            System.out.println("Would you like to use one of the premade decks or Register one of your own? (Premade or Register)");
+            String PremadeOrRegister = Input.next();
+            if(PremadeOrRegister.equalsIgnoreCase("premade")){
+                System.out.println("Which deck would you like to use?");
+                System.out.println("1: PsychicGLC");
+                //Enter New Option Line Above Here
+                int DeckChoice = Input.nextInt();
+                switch (DeckChoice){
+                    case 1:
+                        PsychicGLCRegister(Deck, PokemonNickname, AttachedCards, PokemonEvolvesFrom, IsStadium, IsEnergyOrTool);
+                        DeckConfirmed = true;
+                        break;
+                    // Add Case Line Above Here
+                    case 420:
+                        break;
+                    default:
+                        System.out.println("There is not a deck associated with that number.");
+                        break;
+                }
+            } else if (PremadeOrRegister.equalsIgnoreCase("register")) {
+                Map<Integer, String> CardNumberToCardType = new HashMap<>();
+                Map<Integer, String> CardNumberToCardName = new HashMap<>();
+                Map<Integer, String> CardNumberToCardNickName = new HashMap<>();
+                Map<Integer, String> CardNumberToPreevolution = new HashMap<>();
+                String DeckName;
+                System.out.println("Let's get started in registering 60 cards ");
+                while(Deck.size()<60){
+                    int CardNumber = Deck.size()+1;
+                    System.out.println("Card "+CardNumber+":");
+                    System.out.println("Is it either a Pokemon, Tool, Stadium, or Energy? (Y or N)");
+                    String PTEYOrN = Input.next();
+                    if(PTEYOrN.equalsIgnoreCase("y")){
+                        while (true){
+                            System.out.println("What type of Card is it? (Pokemon, Tool, Stadium, Energy, or Return)");
+                            String CardType = Input.next();
+                            if (CardType.equalsIgnoreCase("pokemon")){
+                                while (true){
+                                    System.out.println("What is the name of the card?");
+                                    String Fake = Input.nextLine();
+                                    String CardName = Input.nextLine();
+                                    System.out.println("What is a 3-4 letter shorthand for this pokemon.");
+                                    String CardNickName = Input.next();
+                                    System.out.println("Card "+CardNumber+" will be called "+CardName+". It will be referred to as "+CardNickName+" on the bench. Is this OK? (Y or N or Return)");
+                                    String NameConfirm = Input.next();
+                                    if(NameConfirm.equalsIgnoreCase("y")){
+                                        while (true) {
+                                            System.out.println("Is it a basic pokemon? (Y or N)");
+                                            String IsBasic = Input.next();
+                                            if (IsBasic.equalsIgnoreCase("y")) {
+                                                System.out.println("How many " + CardName + "s would you like in your deck? (Min 1 - Max 4)");
+                                                int CardAmount = Input.nextInt();
+                                                if (CardAmount >= 1) {
+                                                    if (CardAmount <= 4) {
+                                                        for (int i = 0; i < CardAmount; i++) {
+                                                            CardNumberToCardName.put(Deck.size(), CardName);
+                                                            CardNumberToCardType.put(Deck.size(), "Pokemon");
+                                                            CardNumberToCardNickName.put(Deck.size(),CardNickName);
+                                                            CardNumberToPreevolution.put(Deck.size(), "Basic");
+                                                            Deck.add(CardName);
+                                                            int X = Deck.size()-1;
+                                                            PokemonNickname.put(Deck.get(X),CardNickName);
+                                                            AttachedCards.put(Deck.get(X), new ArrayList<>());
+                                                            PokemonEvolvesFrom.put(Deck.get(X),"Basic");
+                                                            System.out.println(CardName + " was added to your deck.");
+                                                        }
+                                                        break;
+                                                    } else if (CardAmount == 420) {
+                                                        break;
+                                                    } else {
+                                                        System.out.println("That number is too big.");
+                                                    }
+                                                } else {
+                                                    System.out.println("That number is too small.");
+                                                }
+                                            }else if(IsBasic.equalsIgnoreCase("n")){
+                                                while (true){
+                                                    System.out.println("What Pokemon does it evolve from? (Case Sensitive: Make sure to spell it the same way you put it in.)");
+                                                    String FakePokemon = Input.nextLine();
+                                                    String PreevolutionName = Input.nextLine();
+                                                    System.out.println(CardName+" will evolve from "+PreevolutionName+". Is that ok? (Y or N)");
+                                                    String PreevolutionCheck = Input.next();
+                                                    if(PreevolutionCheck.equalsIgnoreCase("y")){
+                                                        System.out.println("How many " + CardName + "s would you like in your deck? (Min 1 - Max 4)");
+                                                        int CardAmount = Input.nextInt();
+                                                        if (CardAmount >= 1) {
+                                                            if (CardAmount <= 4) {
+                                                                for (int i = 0; i < CardAmount; i++) {
+                                                                    CardNumberToCardName.put(Deck.size(), CardName);
+                                                                    CardNumberToCardType.put(Deck.size(), "Pokemon");
+                                                                    CardNumberToCardNickName.put(Deck.size(),CardNickName);
+                                                                    CardNumberToPreevolution.put(Deck.size(), PreevolutionName);
+                                                                    Deck.add(CardName);
+                                                                    int X = Deck.size()-1;
+                                                                    PokemonNickname.put(Deck.get(X),CardNickName);
+                                                                    AttachedCards.put(Deck.get(X), new ArrayList<>());
+                                                                    PokemonEvolvesFrom.put(Deck.get(X),PreevolutionName);
+                                                                    System.out.println(CardName + " was added to your deck.");
+                                                                }
+                                                                break;
+                                                            } else if (CardAmount == 420) {
+                                                                break;
+                                                            } else {
+                                                                System.out.println("That number is too big.");
+                                                            }
+                                                        } else {
+                                                            System.out.println("That number is too small.");
+                                                        }
+                                                    }
+                                                }
+                                                break;
+                                            }else{
+                                                System.out.println("Not a freaking option.");
+                                            }
+                                        }
+                                        break;
+                                    } else if (NameConfirm.equalsIgnoreCase("return")) {
+                                        break;
+                                    }
+                                }
+                                break;
+                            }else if (CardType.equalsIgnoreCase("tool")){
+                                while (true){
+                                    System.out.println("What is the name of the card?");
+                                    String Fake = Input.nextLine();
+                                    String CardName = Input.nextLine();
+                                    System.out.println("Card "+CardNumber+" will be called "+CardName+". Is this OK? (Y or N or Return)");
+                                    String NameConfirm = Input.next();
+                                    if(NameConfirm.equalsIgnoreCase("y")){
+                                        while (true) {
+                                            System.out.println("How many " + CardName + "s would you like in your deck? (Min 1 - Max 4)");
+                                            int CardAmount = Input.nextInt();
+                                            if (CardAmount >=1) {
+                                                if (CardAmount <=4) {
+                                                    for(int i=0;i<CardAmount;i++){
+                                                        CardNumberToCardName.put(Deck.size(), CardName);
+                                                        CardNumberToCardType.put(Deck.size(), "EnergyOrTool");
+                                                        Deck.add(CardName);
+                                                        int X=Deck.size()-1;
+                                                        IsEnergyOrTool.put(Deck.get(X),true);
+                                                        System.out.println(CardName+" was added to your deck.");
+                                                    }
+                                                    break;
+                                                }else if(CardAmount==420) {
+                                                    break;
+                                                }else{
+                                                    System.out.println("That number is too big.");
+                                                }
+                                            } else {
+                                                System.out.println("That number is too small.");
+                                            }
+                                        }
+                                        break;
+                                    } else if (NameConfirm.equalsIgnoreCase("return")) {
+                                        break;
+                                    }
+                                }break;
+                            }else if (CardType.equalsIgnoreCase("stadium")){
+                                while (true){
+                                    System.out.println("What is the name of the card?");
+                                    String Fake = Input.nextLine();
+                                    String CardName = Input.nextLine();
+                                    System.out.println("Card "+CardNumber+" will be called "+CardName+". Is this OK? (Y or N or Return)");
+                                    String NameConfirm = Input.next();
+                                    if(NameConfirm.equalsIgnoreCase("y")){
+                                        while (true) {
+                                            System.out.println("How many " + CardName + "s would you like in your deck? (Min 1 - Max 4)");
+                                            int CardAmount = Input.nextInt();
+                                            if (CardAmount >=1) {
+                                                if (CardAmount <=4) {
+                                                    for(int i=0;i<CardAmount;i++){
+                                                        CardNumberToCardName.put(Deck.size(), CardName);
+                                                        CardNumberToCardType.put(Deck.size(), "Stadium");
+                                                        Deck.add(CardName);
+                                                        int X=Deck.size()-1;
+                                                        IsStadium.put(Deck.get(X),true);
+                                                        System.out.println(CardName+" was added to your deck.");
+                                                    }
+                                                    break;
+                                                }else if(CardAmount==420) {
+                                                    break;
+                                                }else{
+                                                    System.out.println("That number is too big.");
+                                                }
+                                            } else {
+                                                System.out.println("That number is too small.");
+                                            }
+                                        }
+                                        break;
+                                    } else if (NameConfirm.equalsIgnoreCase("return")) {
+                                        break;
+                                    }
+                                }break;
+                            }else if (CardType.equalsIgnoreCase("energy")){
+                                while (true){
+                                    System.out.println("What is the name of the card?");
+                                    String Fake = Input.nextLine();
+                                    String CardName = Input.nextLine();
+                                    System.out.println("Card "+CardNumber+" will be called "+CardName+". Is this OK? (Y or N or Return)");
+                                    String NameConfirm = Input.next();
+                                    if(NameConfirm.equalsIgnoreCase("y")){
+                                        while (true) {
+                                            int CardsLeft = 60-Deck.size();
+                                            System.out.println("How many " + CardName + "s would you like in your deck? (Min 1 - Max "+CardsLeft+")");
+                                            int CardAmount = Input.nextInt();
+                                            if (CardAmount >=1) {
+                                                if (CardAmount <=CardsLeft) {
+                                                    for(int i=0;i<CardAmount;i++){
+                                                        CardNumberToCardName.put(Deck.size(), CardName);
+                                                        CardNumberToCardType.put(Deck.size(), "EnergyOrTool");
+                                                        Deck.add(CardName);
+                                                        int X=Deck.size()-1;
+                                                        IsEnergyOrTool.put(Deck.get(X),true);
+                                                        System.out.println(CardName+" was added to your deck.");
+                                                    }
+                                                    break;
+                                                }else if(CardAmount==420) {
+                                                    break;
+                                                }else{
+                                                    System.out.println("That number is too big.");
+                                                }
+                                            } else {
+                                                System.out.println("That number is too small.");
+                                            }
+                                        }
+                                        break;
+                                    } else if (NameConfirm.equalsIgnoreCase("return")) {
+                                        break;
+                                    }
+                                }break;
+                            }else if (CardType.equalsIgnoreCase("return")){
+                                break;
+                            }else{
+                                System.out.println("That's not a valid card type.");
+                            }
+                        }
+                    }else if(PTEYOrN.equalsIgnoreCase("n")){
+                        while (true){
+                            System.out.println("What is the name of the card?");
+                            String Fake = Input.nextLine();
+                            String CardName = Input.nextLine();
+                            System.out.println("Card "+CardNumber+" will be called "+CardName+". Is this OK? (Y or N or Return)");
+                            String NameConfirm = Input.next();
+                            if(NameConfirm.equalsIgnoreCase("y")){
+                                while (true) {
+                                    System.out.println("How many " + CardName + "s would you like in your deck? (Min 1 - Max 4)");
+                                    int CardAmount = Input.nextInt();
+                                    if (CardAmount >=1) {
+                                        if (CardAmount <=4) {
+                                            for(int i=0;i<CardAmount;i++){
+                                                CardNumberToCardName.put(Deck.size(), CardName);
+                                                CardNumberToCardType.put(Deck.size(), "Other");
+                                                Deck.add(CardName);
+                                                System.out.println(CardName+" was added to your deck.");
+                                            }
+                                            break;
+                                        }else if(CardAmount==420) {
+                                            break;
+                                        }else{
+                                                System.out.println("That number is too big.");
+                                        }
+                                    } else {
+                                        System.out.println("That number is too small.");
+                                    }
+                                }
+                                break;
+                            } else if (NameConfirm.equalsIgnoreCase("return")) {
+                                break;
+                            }
+                        }
+                    }else{
+                        System.out.println("Bruh. Y or N. Try Again.");
+                    }
+                }
+                System.out.println("And Finally...");
+                while (true){
+                    System.out.println("What would you like to name your deck? (Must be 1 word)");
+                    DeckName = Input.next();
+                    System.out.println("Your Deck will be called "+DeckName+". Would you like to continue? (Y or N)");
+                    String FinalizeDeckName = Input.next();
+                    if(FinalizeDeckName.equalsIgnoreCase("y")){
+                        System.out.println("Deck has been named.");
+                        break;
+                    }
+                }
+                DeckConfirmed=true;
+                while(true){
+                    System.out.println("Would you like to get the code and instructions to make this deck show up on the Premade Decks list? (Y or N)");
+                    String GetCodeConfirm = Input.next();
+                    if(GetCodeConfirm.equalsIgnoreCase("y")){
+                        System.out.println("//Here's the code to plug in to line 1785. Copy and paste it starting with the line below.");
+                        System.out.println("private static void "+DeckName+"(List<String> Deck, Map<String, String> PokemonNickname, Map<String, List<String>> AttachedCards, Map<String,String> PokemonEvolvesFrom, Map<String,Boolean> IsStadium, Map<String,Boolean> IsToolOrEnergy) {");
+                        System.out.println("int X;");
+                        for(int i=0; i<60;i++){
+                            if(CardNumberToCardType.getOrDefault(i,"Default").equalsIgnoreCase("Pokemon")){
+                                System.out.println("Deck.add(\""+CardNumberToCardName.get(i)+"\");");
+                                System.out.println("X = Deck.size()-1;");
+                                System.out.println("PokemonNickname.put(Deck.get(X),\""+CardNumberToCardNickName.get(i)+"\");");
+                                System.out.println("AttachedCards.put(Deck.get(X), new ArrayList<>());");
+                                System.out.println("PokemonEvolvesFrom.put(Deck.get(X),\""+CardNumberToPreevolution.get(i)+"\");");
+                            }else if(CardNumberToCardType.getOrDefault(i,"Default").equalsIgnoreCase("EnergyOrTool")){
+                                System.out.println("Deck.add(\""+CardNumberToCardName.get(i)+"\");");
+                                System.out.println("X = Deck.size()-1;");
+                                System.out.println("IsToolOrEnergy.put(Deck.get(X),true);");
+                            }else if(CardNumberToCardType.getOrDefault(i,"Default").equalsIgnoreCase("Stadium")){
+                                System.out.println("Deck.add(\""+CardNumberToCardName.get(i)+"\");");
+                                System.out.println("X = Deck.size()-1;");
+                                System.out.println("IsStadium.put(Deck.get(X),true);");
+                            }else if(CardNumberToCardType.getOrDefault(i,"Default").equalsIgnoreCase("Other")){
+                                System.out.println("Deck.add(\""+CardNumberToCardName.get(i)+"\");");
+                            }else if(CardNumberToCardType.getOrDefault(i,"Default").equalsIgnoreCase("Default")){
+                                System.out.println("Deck.add(\""+CardNumberToCardName.get(i)+"\");");
+                                System.out.println("// This Card was not labelled with a type. If it is supposed to it will not work like normal.");
+                            }
+                        }
+                        System.out.println("}");
+                        System.out.println("");
+                        System.out.println("// This is not included with the code The last line was one above.");
+                        System.out.println("// Copy and paste this code at the very bottom after the last line of all of the code.");
+                        System.out.println("");
+                        System.out.println("Type \"Confirm\" when you are ready for the next line of code.");
+                        while (true){
+                            String Confirm1 = Input.next();
+                            if (Confirm1.equalsIgnoreCase("confirm")){
+                                break;
+                            }
+                        }
+                        System.out.println("//Here's the New Case line code to plug in near line 40. Copy and paste it starting with the line below.");
+                        System.out.println("case XX:");
+                        System.out.println(DeckName+"(Deck, PokemonNickname, AttachedCards, PokemonEvolvesFrom, IsStadium, IsEnergyOrTool);");
+                        System.out.println("DeckConfirmed = true;");
+                        System.out.println("break;");
+                        System.out.println("");
+                        System.out.println("// This is not included into the code the last line was one above. Make sure to replace the XX in the case function with a unique number.");
+                        System.out.println("");
+                        System.out.println("Type \"Confirm\" when you are ready for the next line of code.");
+                        while (true){
+                            String Confirm2 = Input.next();
+                            if (Confirm2.equalsIgnoreCase("confirm")){
+                                break;
+                            }
+                        }
+                        System.out.println("//One last line of code left and is listed below. Place the New Option Line Code near line 33");
+                        System.out.println("System.out.println(\"XX: "+DeckName+"\");");
+                        System.out.println("");
+                        System.out.println("// This is not included into the code the last line was one above. Make sure to replace the XX to match the case function as used earlier.");
+                        System.out.println("");
+                        System.out.println("Type \"Confirm\" when you are finished plugging in all the code.");
+                        while (true){
+                            String Confirm3 = Input.next();
+                            if (Confirm3.equalsIgnoreCase("confirm")){
+                                break;
+                            }
+                        }
+                    } else if (GetCodeConfirm.equalsIgnoreCase("n")) {
+                        break;
+                    }else {
+                        System.out.println("Sorry I didn't get that.");
+                    }
+                }
+            }else{
 
-        PsychicGLCRegister(Deck, PokemonNickname, AttachedCards, PokemonEvolvesFrom, IsStadium, IsEnergyOrTool);
+            }
+        }
 
         HardShuffleDeck(DeckFront,DeckBack,Deck);
         HardShuffleDeck(DeckFront,DeckBack,Deck);
@@ -96,7 +460,8 @@ public class Main {
                 System.out.println("Draw: Put a card from somewhere into your hand!");
                 System.out.println("Discard: Discard a card from somewhere");
                 System.out.println("MoveCard: Move a card to and from somewhere");
-                System.out.println("MovePokemon: Move a Pokemon card in and out of play");
+                System.out.println("MovePokemon: Move a Pokemon card in and out of play or switch your active with your bench");
+                System.out.println("AttachCard: Move an Energy or an Item Tool onto a pokemon, or remove and attach card.");
                 System.out.println("ChangeStatus: Change the status of certain triggers in the game");
             }
             if(NextMove.toLowerCase().equals("draw")){
@@ -239,16 +604,16 @@ public class Main {
                         }
                     }else if(CardFrom.toLowerCase().equals("deck")){
                         if (CardTo.toLowerCase().equals("hand")){
-                            CheckDeckToMoveCard(Input, DeckFront, Deck, DeckBack, Hand,"Your Hand");
+                            CheckDeckToMoveCard(Input, DeckFront, Deck, DeckBack, Hand,"Your Hand",false,IsStadium);
                             break;
                         } else if (CardTo.toLowerCase().equals("discard")) {
-                            CheckDeckToMoveCard(Input,DeckFront,Deck,DeckBack,Discard,"Your Discard Pile");
+                            CheckDeckToMoveCard(Input,DeckFront,Deck,DeckBack,Discard,"Your Discard Pile",false,IsStadium);
                             break;
                         } else if (CardTo.toLowerCase().equals("prizecards")) {
-                            CheckDeckToMoveCard(Input,DeckFront,Deck,DeckBack,PrizeCards,"Your Prize Cards");
+                            CheckDeckToMoveCard(Input,DeckFront,Deck,DeckBack,PrizeCards,"Your Prize Cards",false,IsStadium);
                             break;
                         } else if (CardTo.toLowerCase().equals("stadium")) {
-                            CheckDeckToMoveCard(Input,DeckFront,Deck,DeckBack,Stadium,"Your Stadium Spot");
+                            CheckDeckToMoveCard(Input,DeckFront,Deck,DeckBack,Stadium,"Your Stadium Spot",true,IsStadium);
                             break;
                         }else{
                             System.out.println("Not a valid location");
@@ -279,7 +644,7 @@ public class Main {
                             CheckOriginToMoveCard(Discard,"Your Discard Pile", "Which card would you like to add to Your Prize Cards?",Input,PrizeCards,"Your Prize Cards");
                             break;
                         }else if (CardTo.toLowerCase().equals("stadium")) {
-                            CheckOriginToMoveCard(Discard, "Your Discard Pile", "Which card would you like to move to your Stadium Spot?", Input, Stadium, "Your Stadium Spot");
+                            CheckBooleanToMoveCard(Input,Discard,"Your Discard Pile",IsStadium,Stadium,"Your Stadium Spot");
                             break;
                         }else{
                             System.out.println("Not a valid location");
@@ -310,7 +675,7 @@ public class Main {
                                 continue;
                             }
                         }else if (CardTo.toLowerCase().equals("stadium")) {
-                            CheckOriginToMoveCard(PrizeCards, "Your Prize Cards", "Which card would you like to move to your Stadium Spot?", Input, Stadium, "Your Stadium Spot");
+                            CheckBooleanToMoveCard(Input,PrizeCards,"Your Prize Cards",IsStadium,Stadium,"Your Stadium Spot");
                             break;
                         }else{
                             System.out.println("Not a valid location");
@@ -598,6 +963,249 @@ public class Main {
                             }
                         }
                         break;
+                    }else{
+                        System.out.println("Not a valid origin");
+                        break;
+                    }
+                }
+            }if(NextMove.equalsIgnoreCase("attachcard")){
+                while (true) {
+                    System.out.println("Would you like to Attach or Detach a card? (return to go back)");
+                    String AttachOrDetach = Input.next();
+                    if(AttachOrDetach.equalsIgnoreCase("attach")){
+                        System.out.println("Where would you like to take the card from? (Hand, Deck, Discard, or Return)");
+                        String TakeCardFromToAttach = Input.next();
+                        System.out.println("Where would you like to attach the card to? (Active, Discard, or Return");
+                        String LocationToAttachTo = Input.next();
+                        if(TakeCardFromToAttach.equalsIgnoreCase("hand")){
+                            if(LocationToAttachTo.equalsIgnoreCase("active")){
+                                CheckBooleanToAttachCard(Input,Hand,"Your Hand",Active,"Your Active",true,IsEnergyOrTool,AttachedCards);
+                            } else if (LocationToAttachTo.equalsIgnoreCase("bench")) {
+                                CheckBooleanToAttachCard(Input,Hand,"Your Hand",Bench,"Your Bench",false,IsEnergyOrTool,AttachedCards);
+                            } else if (LocationToAttachTo.equalsIgnoreCase("return")) {
+                               break;
+                            }else{
+                                System.out.println("That's not a valid location to attach a card to.");
+                            }
+                        } else if (TakeCardFromToAttach.equalsIgnoreCase("deck")) {
+                            if(LocationToAttachTo.equalsIgnoreCase("active")){
+                                PrintDeck(DeckFront,Deck,DeckBack);
+                                System.out.println("Which Card would you like to move from the deck");
+                                int CardToAttachFromDeck = Input.nextInt();
+                                CheckBooleanToTakeFromDeckSpecific(DeckFront, Deck, DeckBack, AttachedCards.get(Active.get(0)), "Your Active", CardToAttachFromDeck, IsEnergyOrTool);
+                                break;
+                            } else if (LocationToAttachTo.equalsIgnoreCase("bench")) {
+                                PrintDeck(DeckFront,Deck,DeckBack);
+                                System.out.println("Which Card would you like to move from the deck?");
+                                int CardToAttachFromDeckToBench = Input.nextInt();
+                                PrintList(Bench,"Your Bench");
+                                System.out.println("And where would you like to move it to?");
+                                int BenchToAttachCard = Input.nextInt();
+                                if(BenchToAttachCard<=Bench.size()) {
+                                    CheckBooleanToTakeFromDeckSpecific(DeckFront, Deck, DeckBack, AttachedCards.get(Bench.get(BenchToAttachCard-1)), "Your Active", CardToAttachFromDeckToBench, IsEnergyOrTool);
+                                    break;
+                                }else{
+                                    System.out.println("There isn't a Pokemon there.");
+                                }
+                            } else if (LocationToAttachTo.equalsIgnoreCase("return")) {
+                                break;
+                            }else{
+                                System.out.println("That's not a valid location to attach a card to.");
+                            }
+                        } else if (TakeCardFromToAttach.equalsIgnoreCase("discard")) {
+                            if(LocationToAttachTo.equalsIgnoreCase("active")){
+                                CheckBooleanToAttachCard(Input,Discard,"Your Discard Pile",Active,"Your Active",true,IsEnergyOrTool,AttachedCards);
+                                break;
+                            } else if (LocationToAttachTo.equalsIgnoreCase("discard")) {
+                                CheckBooleanToAttachCard(Input,Discard,"Your Discard Pile",Bench,"Your Bench",false,IsEnergyOrTool,AttachedCards);
+                                break;
+                            } else if (LocationToAttachTo.equalsIgnoreCase("return")) {
+                                break;
+                            }else{
+                                System.out.println("That's not a valid location to attach a card to.");
+                            }
+                        } else if (TakeCardFromToAttach.equalsIgnoreCase("return")) {
+                            break;
+                        }else{
+                            System.out.println("Not a valid take from location");
+                        }
+                    } else if (AttachOrDetach.equalsIgnoreCase("detach")) {
+                        System.out.println("Where would you like to take the card from? (Active, Bench, or Return)");
+                        String TakeCardFromToDetach = Input.next();
+                        System.out.println("Where would you like to attach the card to? (Hand, Deck, Discard, or Return");
+                        String LocationToAttachTo = Input.next();
+                        if(TakeCardFromToDetach.equalsIgnoreCase("active")){
+                            if(LocationToAttachTo.equalsIgnoreCase("hand")){
+                                while(true){
+                                    PrintList(AttachedCards.get(Active.get(0)),Active.get(0));
+                                    System.out.println("Which Card would you like to move?");
+                                    int CardToRemoveFromActive = Input.nextInt();
+                                    if(CardToRemoveFromActive<=AttachedCards.get(Active.get(0)).size()){
+                                        MoveCard(AttachedCards.get(Active.get(0)),Hand,"Your Hand",CardToRemoveFromActive);
+                                        break;
+                                    } else if (CardToRemoveFromActive==420) {
+                                        break;
+                                    }else{
+                                        System.out.println(Active.get(0)+" doesn't have that card.");
+                                    }
+                                }
+                            } else if (LocationToAttachTo.equalsIgnoreCase("Deck")) {
+                                while (true) {
+                                    System.out.println("Where would you like to move the card in the deck? (Front, Deck, Bottom, or Return)");
+                                    String LocationInDeck = Input.next();
+                                    if (LocationInDeck.equalsIgnoreCase("front")){
+                                        PrintList(AttachedCards.get(Active.get(0)),Active.get(0));
+                                        System.out.println("Which Card would you like to move?");
+                                        int CardToRemoveFromActive = Input.nextInt();
+                                        if(CardToRemoveFromActive<=AttachedCards.get(Active.get(0)).size()) {
+                                            MoveCard(AttachedCards.get(Active.get(0)), DeckFront, "Front of Your Deck", CardToRemoveFromActive);
+                                            break;
+                                        }else if (CardToRemoveFromActive==420) {
+                                            break;
+                                        }else{
+                                            System.out.println(Active.get(0)+" doesn't have that card.");
+                                        }
+                                    } else if (LocationInDeck.equalsIgnoreCase("deck")){
+                                        PrintList(AttachedCards.get(Active.get(0)),Active.get(0));
+                                        System.out.println("Which Card would you like to move?");
+                                        int CardToRemoveFromActive = Input.nextInt();
+                                        if(CardToRemoveFromActive<=AttachedCards.get(Active.get(0)).size()) {
+                                            MoveCard(AttachedCards.get(Active.get(0)), Deck, "Your Deck", CardToRemoveFromActive);
+                                            break;
+                                        }else if (CardToRemoveFromActive==420) {
+                                            break;
+                                        }else{
+                                            System.out.println(Active.get(0)+" doesn't have that card.");
+                                        }
+                                    } else if (LocationInDeck.equalsIgnoreCase("bottom")){
+                                        PrintList(AttachedCards.get(Active.get(0)),Active.get(0));
+                                        System.out.println("Which Card would you like to move?");
+                                        int CardToRemoveFromActive = Input.nextInt();
+                                        if(CardToRemoveFromActive<=AttachedCards.get(Active.get(0)).size()) {
+                                            MoveCard(AttachedCards.get(Active.get(0)), DeckBack, "Back of Your Deck", CardToRemoveFromActive);
+                                            break;
+                                        }else if (CardToRemoveFromActive==420) {
+                                            break;
+                                        }else{
+                                            System.out.println(Active.get(0)+" doesn't have that card.");
+                                        }
+                                    }else if (LocationInDeck.equalsIgnoreCase("return")){
+                                        break;
+                                    }else{
+                                        System.out.println("That's not a location in the deck.");
+                                    }
+                                }
+                            } else if(LocationToAttachTo.equalsIgnoreCase("discard")){
+                                while(true){
+                                    PrintList(AttachedCards.get(Active.get(0)),Active.get(0));
+                                    System.out.println("Which Card would you like to move?");
+                                    int CardToRemoveFromActive = Input.nextInt();
+                                    if(CardToRemoveFromActive<=AttachedCards.get(Active.get(0)).size()){
+                                        MoveCard(AttachedCards.get(Active.get(0)),Discard,"Your Discard Pile", CardToRemoveFromActive);
+                                        break;
+                                    } else if (CardToRemoveFromActive==420) {
+                                        break;
+                                    } else {
+                                        System.out.println(Active.get(0)+" doesn't have that card.");
+                                    }
+                                }
+                            } else if (LocationToAttachTo.equalsIgnoreCase("return")) {
+                                break;
+                            } else{
+                                System.out.println("Not a valid move location.");
+                            }
+                        } else if (TakeCardFromToDetach.equalsIgnoreCase("bench")) {
+                            while(true){
+                                PrintList(Bench,"Your Bench");
+                                System.out.println("Which Pokemon would you like to remove a card from?");
+                                int ChooseBenchToRemoveFrom = Input.nextInt();
+                                int ChooseBenchToRemoveFromIndex = ChooseBenchToRemoveFrom-1;
+                                if(ChooseBenchToRemoveFrom<=Bench.size()){
+                                    while(true){
+                                        PrintList(AttachedCards.get(Bench.get(ChooseBenchToRemoveFromIndex)), Bench.get(ChooseBenchToRemoveFromIndex));
+                                        System.out.println("Which Card would you like to remove.");
+                                        int CardToRemoveFromBench = Input.nextInt();
+                                        if(CardToRemoveFromBench<= AttachedCards.get(Bench.get(ChooseBenchToRemoveFromIndex)).size()){
+                                            if(LocationToAttachTo.equalsIgnoreCase("Hand")){
+                                               MoveCard(AttachedCards.get(Bench.get(ChooseBenchToRemoveFromIndex)),Hand,"Your Hand",CardToRemoveFromBench);
+                                            } else if (LocationToAttachTo.equalsIgnoreCase("Discard")) {
+                                                MoveCard(AttachedCards.get(Bench.get(ChooseBenchToRemoveFromIndex)),Discard,"Your Discard Pile",CardToRemoveFromBench);
+                                            } else if (LocationToAttachTo.equalsIgnoreCase("Deck")) {
+                                                while (true) {
+                                                    System.out.println("Where would you like to move the card in the deck? (Front, Deck, Bottom, or Return)");
+                                                    String LocationInDeck = Input.next();
+                                                    if (LocationInDeck.equalsIgnoreCase("front")){
+                                                        MoveCard(AttachedCards.get(Bench.get(ChooseBenchToRemoveFromIndex)), DeckFront, "Front of Your Deck", CardToRemoveFromBench);
+                                                        break;
+                                                    } else if (LocationInDeck.equalsIgnoreCase("deck")){
+                                                        MoveCard(AttachedCards.get(Bench.get(ChooseBenchToRemoveFromIndex)), Deck, "Your Deck", CardToRemoveFromBench);
+                                                        break;
+                                                    } else if (LocationInDeck.equalsIgnoreCase("bottom")){
+                                                        MoveCard(AttachedCards.get(Bench.get(ChooseBenchToRemoveFromIndex)), DeckBack, "Back of Your Deck", CardToRemoveFromBench);
+                                                        break;
+                                                    }else if (LocationInDeck.equalsIgnoreCase("return")){
+                                                        break;
+                                                    }else{
+                                                        System.out.println("That's not a location in the deck.");
+                                                    }
+                                                }
+                                            }
+                                            break;
+                                        } else if (CardToRemoveFromBench==420) {
+                                            break;
+                                        }else{
+                                            System.out.println("That Pokemon does not have that card.");
+                                        }
+                                    }
+                                    break;
+                                } else if (ChooseBenchToRemoveFrom==420) {
+                                    break;
+                                }else {
+                                    System.out.println("There is no Pokemon there.");
+                                }
+                            }
+                        }
+                    } else if (AttachOrDetach.equalsIgnoreCase("return")) {
+                       break;
+                    }else{
+                        System.out.println("That's not a valid command");
+                    }
+                }
+            }if(NextMove.equalsIgnoreCase("changestatus")){
+                while (true){
+                    System.out.println("Choose which setting you would like to change:");
+                    System.out.println("1) Prize Cards Revealed: "+PrizeCardsRevealed);
+                    System.out.println("2) Max Bench Size: "+MaxBenchSize);
+                    int ChangeStatusChoice = Input.nextInt();
+                    if(ChangeStatusChoice==1){
+                        System.out.println("This setting is currently set to: "+PrizeCardsRevealed);
+                        System.out.println("Would you like to set it to "+!PrizeCardsRevealed+"? (Y or N)");
+                        String ChangeRevealed = Input.next();
+                        if(ChangeRevealed.equalsIgnoreCase("y")){
+                            PrizeCardsRevealed = !PrizeCardsRevealed;
+                            break;
+                        } else if (ChangeRevealed.equalsIgnoreCase("n")) {
+                            System.out.println("Understandable, Have a nice day.");
+                            break;
+                        }else{
+                            System.out.println("Bruh you had 2 options: Y or N. Try Harder next time.");
+                        }
+                    }else if(ChangeStatusChoice==2) {
+                        System.out.println("Your Max Bench size is currently set to "+MaxBenchSize+".");
+                        System.out.println("What amount would you like to set it to?");
+                        MaxBenchSize = Input.nextInt();
+                        if(MaxBenchSize<Bench.size()) {
+                            while (MaxBenchSize<Bench.size()) {
+                                int AmountLeft = Bench.size()-MaxBenchSize;
+                                PrintList(Bench, "Your Bench");
+                                System.out.println("You have "+AmountLeft+" to remove left. Which would you like to remove?");
+                                int BenchToRemove = Input.nextInt();
+                                int BenchToRemoveIndex = BenchToRemove-1;
+                                MovePokemonOutOfPlay(Bench,Discard,"Your Discard Pile",AttachedCards,BenchToRemoveIndex);
+                            }
+                        }
+                        System.out.println("Max Bench Size was changed to: "+MaxBenchSize);
+                        break;
                     }
                 }
             }
@@ -625,6 +1233,54 @@ public class Main {
         }
     }
 
+    private static void CheckBooleanToAttachCard(Scanner Input, List<String> Origin, String OriginName, List<String> Destination, String DestinationName,Boolean DestinationIsActive, Map<String, Boolean> TestBoolean, Map<String, List<String>> AttachedCards) {
+        if (DestinationIsActive) {
+            while (true) {
+                PrintList(Origin, OriginName);
+                System.out.println("Which card would you like to move?");
+                int CardFromOriginToActive = Input.nextInt();
+                int CardFromOriginToActiveIndex = CardFromOriginToActive - 1;
+                if (CardFromOriginToActive <= Origin.size()) {
+                    if (TestBoolean.getOrDefault(Origin.get(CardFromOriginToActiveIndex), false).equals(true)) {
+                        MoveCard(Origin, AttachedCards.get(Destination.get(0)), DestinationName, CardFromOriginToActive);
+                        break;
+                    }
+                } else if (CardFromOriginToActive == 420) {
+                    break;
+                } else {
+                    System.out.println("You don't have that card.");
+                }
+            }
+        }else{
+            while (true) {
+                PrintList(Origin, OriginName);
+                System.out.println("Which card would you like to move?");
+                int CardFromOriginToBench = Input.nextInt();
+                int CardFromOriginToBenchIndex = CardFromOriginToBench - 1;
+                PrintList(Destination, DestinationName);
+                System.out.println("Which card would you like to move it to?");
+                int CardOnBench = Input.nextInt();
+                int CardOnBenchIndex = CardOnBench - 1;
+                if(CardOnBench<=Destination.size()) {
+                    if (CardFromOriginToBench <= Origin.size()) {
+                        if (TestBoolean.getOrDefault(Origin.get(CardFromOriginToBenchIndex), false).equals(true)) {
+                            MoveCard(Origin, AttachedCards.get(Destination.get(CardOnBenchIndex)), DestinationName, CardFromOriginToBench);
+                            break;
+                        }
+                    } else if (CardFromOriginToBench == 420) {
+                        break;
+                    } else {
+                        System.out.println("You don't have that card.");
+                    }
+                }else if (CardOnBench== 420) {
+                    break;
+                } else {
+                    System.out.println("There's no Card there on the bench.");
+                }
+            }
+        }
+    }
+
     private static void CheckBooleanToMoveCard(Scanner Input, List<String> Origin, String OriginName, Map<String, Boolean> IsBoolean,List<String> Destination, String DestinationName) {
         while(true) {
             PrintList(Origin, OriginName);
@@ -647,30 +1303,46 @@ public class Main {
         }
     }
 
-    private static void MovePokemonOutOfPlay(List<String> Origin, List<String> Destination,String DestinationName, Map<String, List<String>> AttachedCards,int CardWanted) {
-        int OriginalSizeOfAttachedCards=AttachedCards.get(Origin.get(CardWanted)).size();
+    private static void MovePokemonOutOfPlay(List<String> Origin, List<String> Destination,String DestinationName, Map<String, List<String>> AttachedCards,int CardWantedIndex) {
+        int OriginalSizeOfAttachedCards=AttachedCards.get(Origin.get(CardWantedIndex)).size();
         for(int i = 0; i<OriginalSizeOfAttachedCards; i++){
             int Reverse = OriginalSizeOfAttachedCards-i;
-            MoveCard(AttachedCards.get(Origin.get(CardWanted)), Destination,DestinationName,Reverse);
+            MoveCard(AttachedCards.get(Origin.get(CardWantedIndex)), Destination,DestinationName,Reverse);
         }
-        int CardWantedPlusOne = CardWanted+1;
+        int CardWantedPlusOne = CardWantedIndex+1;
         MoveCard(Origin, Destination,"Your Hand",CardWantedPlusOne);
     }
 
-    private static void CheckDeckToMoveCard(Scanner Input, List<String> DeckFront, List<String> Deck, List<String> DeckBack, List<String> Destination, String DestinationName) {
+    private static void CheckDeckToMoveCard(Scanner Input, List<String> DeckFront, List<String> Deck, List<String> DeckBack, List<String> Destination, String DestinationName, boolean CheckForBoolean, Map<String,Boolean> CheckBoolean) {
         while(true) {
-            int DeckTotal = DeckFront.size()+ Deck.size()+ DeckBack.size();
-            PrintDeck(DeckFront, Deck, DeckBack);
-            System.out.println("Which Card would you like to add to "+DestinationName+"?");
-            int CardFromDeckWanted = Input.nextInt();
-            if(CardFromDeckWanted<=DeckTotal){
-                TakeFromDeckSpecific(DeckFront, Deck, DeckBack, Destination, DestinationName,CardFromDeckWanted);
-                break;
-            } else if (CardFromDeckWanted==420) {
-                break;
-            }else{
-                System.out.println("That Card is not available.");
-                continue;
+            if (CheckForBoolean){
+                int DeckTotal = DeckFront.size() + Deck.size() + DeckBack.size();
+                PrintDeck(DeckFront, Deck, DeckBack);
+                System.out.println("Which Card would you like to add to " + DestinationName + "?");
+                int CardFromDeckWanted = Input.nextInt();
+                if (CardFromDeckWanted <= DeckTotal) {
+                    TakeFromDeckSpecific(DeckFront, Deck, DeckBack, Destination, DestinationName, CardFromDeckWanted);
+                    break;
+                } else if (CardFromDeckWanted == 420) {
+                    break;
+                } else {
+                    System.out.println("That Card is not available.");
+                    continue;
+                }
+            }else {
+                int DeckTotal = DeckFront.size() + Deck.size() + DeckBack.size();
+                PrintDeck(DeckFront, Deck, DeckBack);
+                System.out.println("Which Card would you like to add to " + DestinationName + "?");
+                int CardFromDeckWanted = Input.nextInt();
+                if (CardFromDeckWanted <= DeckTotal) {
+                    TakeFromDeckSpecific(DeckFront, Deck, DeckBack, Destination, DestinationName, CardFromDeckWanted);
+                    break;
+                } else if (CardFromDeckWanted == 420) {
+                    break;
+                } else {
+                    System.out.println("That Card is not available.");
+                    continue;
+                }
             }
         }
     }
@@ -699,7 +1371,9 @@ public class Main {
         Deck.add("Big Parasol");
         X=Deck.size()-1;
         IsToolOrEnergy.put(Deck.get(X),true);
-        Deck.add("Capture Energy (SE)");
+        Deck.add("Capture Energy");
+        X=Deck.size()-1;
+        IsToolOrEnergy.put(Deck.get(X),true);
         Deck.add("Counter Catcher (I)");
         Deck.add("Pal Pad (I)");
         Deck.add("Switch Cart (I)");
@@ -739,7 +1413,9 @@ public class Main {
         Deck.add("Gladion (S)");
         Deck.add("Klara (S)");
         Deck.add("Egg Incubator (I)");
-        Deck.add("Lucky Energy (SE)");
+        Deck.add("Lucky Energy");
+        X=Deck.size()-1;
+        IsToolOrEnergy.put(Deck.get(X),true);
         Deck.add("Potion (I)");
         Deck.add("Pokemon Center Lady (S)");
         Deck.add("Mew");
@@ -792,7 +1468,9 @@ public class Main {
         PokemonNickname.put(Deck.get(X),"Sang");
         AttachedCards.put(Deck.get(X), new ArrayList<>());
         PokemonEvolvesFrom.put(Deck.get(X),"Basic");
-        Deck.add("Horror Energy (SE)");
+        Deck.add("Horror Energy");
+        X=Deck.size()-1;
+        IsToolOrEnergy.put(Deck.get(X),true);
         Deck.add("Galarian Ponyta");
         X = Deck.size()-1;
         PokemonNickname.put(Deck.get(X),"G Pon");
@@ -808,7 +1486,9 @@ public class Main {
         PokemonNickname.put(Deck.get(X),"Geng");
         AttachedCards.put(Deck.get(X), new ArrayList<>());
         PokemonEvolvesFrom.put(Deck.get(X),"Haunter");
-        Deck.add("Mystery Energy (SE)");
+        Deck.add("Mystery Energy");
+        X=Deck.size()-1;
+        IsToolOrEnergy.put(Deck.get(X),true);
         Deck.add("Energy Retrieval (I)");
         Deck.add("Cook (S)");
         Deck.add("Haunter");
@@ -915,6 +1595,40 @@ public class Main {
             DeckBack.remove(SpecificCardFromBack);
         }
     }
+    private static void CheckBooleanToTakeFromDeckSpecific(List<String> DeckFront, List<String> Deck, List<String> DeckBack, List<String> Destination, String DestinationName, int CardWanted, Map<String,Boolean> CheckBoolean) {
+        int WantedInDeck = CardWanted - DeckFront.size();
+        int WantedInBack = WantedInDeck- Deck.size();
+        if(CardWanted <= DeckFront.size()){
+            int SpecificCardFromFront = DeckFront.size()-CardWanted;
+            if(CheckBoolean.getOrDefault(DeckFront.get(SpecificCardFromFront),false)) {
+                Destination.add(DeckFront.get(SpecificCardFromFront));
+                System.out.println(DeckFront.get(SpecificCardFromFront) + " was added to " + DestinationName);
+                DeckFront.remove(SpecificCardFromFront);
+            }else{
+                System.out.println("That's not a valid card for "+DestinationName+".");
+            }
+        } else if (WantedInDeck<= Deck.size()) {
+            int SpecificCardFromDeck = WantedInDeck-1;
+            if(CheckBoolean.getOrDefault(Deck.get(SpecificCardFromDeck),false)) {
+                Destination.add(Deck.get(SpecificCardFromDeck));
+                System.out.println(Deck.get(SpecificCardFromDeck) + " was added to " + DestinationName);
+                Deck.remove(SpecificCardFromDeck);
+            }else{
+                System.out.println("That's not a valid card for "+DestinationName+".");
+            }
+        } else if (WantedInBack<= DeckBack.size()) {
+            int SpecificCardFromBack = WantedInBack - 1;
+            if(CheckBoolean.getOrDefault(DeckBack.get(SpecificCardFromBack),false)) {
+                Destination.add(DeckBack.get(SpecificCardFromBack));
+                System.out.println(DeckBack.get(SpecificCardFromBack) + " was added to " + DestinationName);
+                DeckBack.remove(SpecificCardFromBack);
+            }else{
+                System.out.println("That's not a valid card for "+DestinationName+".");
+            }
+        }else{
+            System.out.println("Not a valid location in the deck.");
+        }
+    }
 
 
     private static void TakeFromDeck(List<String> DeckFront, List<String> Deck, List<String> DeckBack, List<String> Destination, String DestinationName, int AmountToTake) {
@@ -987,9 +1701,14 @@ public class Main {
         }
         System.out.println();
         int Count=0;
-        for(int i = 0; i< Bench.size(); i++){
-            Count++;
-            System.out.print("["+PokemonNickname.get(Bench.get(i))+"] ");
+        for(int i = 0; i< Bench.size(); i++) {
+            if (AttachedCards.get(Bench.get(i)).size() == 0) {
+                Count++;
+                System.out.print("[" + PokemonNickname.get(Bench.get(i)) + "] ");
+            }else{
+                Count++;
+                System.out.print("[" + PokemonNickname.get(Bench.get(i)) + " (+"+AttachedCards.get(Bench.get(i)).size()+")] ");
+            }
         }
         for(int i=Count;i<BenchSize;i++){
             System.out.print("[ ] ");
@@ -1023,7 +1742,8 @@ public class Main {
                 if (PokemonEvolvesFrom.get(TakeFrom.get(SpecificPokemon)).equals(Destination.get(0))) {
                     StackedCards.get(TakeFrom.get(SpecificPokemon)).add(Destination.get(0));
                     System.out.println(Destination.get(0) + " has evolved into " + TakeFrom.get(SpecificPokemon));
-                    for (int i = 0; i < StackedCards.get(Destination.get(0)).size(); i++) {
+                    int AmountOfAttachedCards =StackedCards.get((Destination.get(0))).size();
+                    for (int i = 0; i < AmountOfAttachedCards; i++) {
                         StackedCards.get(TakeFrom.get(SpecificPokemon)).add(StackedCards.get(Destination.get(0)).get(0));
                         StackedCards.get(Destination.get(0)).remove(0);
                     }
@@ -1062,4 +1782,5 @@ public class Main {
             }
         }
     }
+    // Plug in Code above here by pressing on the close bracket and pressing enter to start a new line :)
 }
